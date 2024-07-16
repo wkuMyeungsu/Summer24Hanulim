@@ -1,48 +1,6 @@
-// service.js
-const { google } = require("googleapis");
-const { JWT } = require("google-auth-library");
-const { SPREADSHEET_ID, CLIENT_EMAIL, PRIVATE_KEY } = require("./config");
+// service.js (대폭 수정된 버전)
 
-const jwtClient = new JWT({
-  email: CLIENT_EMAIL,
-  key: PRIVATE_KEY,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
-
-const sheets = google.sheets({ version: "v4", auth: jwtClient });
-
-async function fetchSheetNames() {
-  try {
-    const response = await sheets.spreadsheets.get({
-      spreadsheetId: SPREADSHEET_ID,
-      fields: "sheets.properties.title",
-    });
-    return response.data.sheets.map((sheet) => sheet.properties.title);
-  } catch (error) {
-    console.error("Detailed error in fetchSheetNames:", error);
-    throw new Error(`Failed to fetch sheet names: ${error.message}`);
-  }
-}
-
-async function fetchSpreadsheetData(sheetName) {
-  try {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: sheetName,
-    });
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Detailed error in fetchSpreadsheetData for ${sheetName}:`,
-      error
-    );
-    throw new Error(
-      `Failed to fetch data for sheet ${sheetName}: ${error.message}`
-    );
-  }
-}
-
-async function editSpreadsheetData(sheetName, rowNumber, newData) {
+async function editSheetData(sheetName, rowNumber, newData) {
   try {
     const updateRange = `${sheetName}!A${rowNumber}:${getColumnLetter(
       newData.length
@@ -64,7 +22,7 @@ async function editSpreadsheetData(sheetName, rowNumber, newData) {
   }
 }
 
-async function insertSpreadsheetData(sheetName, rowNumber, newData) {
+async function insertSheetData(sheetName, rowNumber, newData) {
   try {
     // 1. 새 행을 삽입합니다.
     await sheets.spreadsheets.batchUpdate({
@@ -129,40 +87,8 @@ async function getSheetId(spreadsheetId, sheetName) {
   return sheet ? sheet.properties.sheetId : null;
 }
 
-// SSE 관련 코드
-let clients = [];
-
-function handleSSEConnection(req, res) {
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-  });
-
-  const clientId = Date.now();
-  const newClient = {
-    id: clientId,
-    res,
-  };
-
-  clients.push(newClient);
-
-  req.on("close", () => {
-    clients = clients.filter((client) => client.id !== clientId);
-  });
-}
-
-function sendUpdateToClients(update) {
-  clients.forEach((client) => {
-    client.res.write(`data: ${JSON.stringify(update)}\n\n`);
-  });
-}
-
 module.exports = {
-  fetchSheetNames,
-  fetchSpreadsheetData,
-  handleSSEConnection,
-  sendUpdateToClients,
-  editSpreadsheetData,
-  insertSpreadsheetData,
+  // ... (기존 내보내기)
+  editSheetData,
+  insertSheetData,
 };

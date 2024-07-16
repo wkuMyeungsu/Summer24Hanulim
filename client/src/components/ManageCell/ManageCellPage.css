@@ -1,0 +1,75 @@
+.manage-cell-page {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.cell-info {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.cell-info p {
+  margin: 5px 0;
+  font-weight: bold;
+  flex: 1 0 40%;
+  text-align: center;
+}
+
+.cell-management-container {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.cell-management-container.modal-open {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.member-list h2 {
+  color: #444;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.member-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.member-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.member-list li:hover {
+  background-color: #f5f5f5;
+}
+
+.member-list li.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .cell-info p {
+    flex: 1 0 100%;
+  }
+}
