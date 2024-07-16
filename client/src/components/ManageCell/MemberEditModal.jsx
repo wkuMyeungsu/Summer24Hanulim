@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MemberEditModal.css";
 
 const mealStructure = [
@@ -83,11 +83,50 @@ const attendanceStructure = [
   },
 ];
 
-export default function MemberEditModal({ member, onSave, onClose }) {
-  const [editedMember, setEditedMember] = useState(member);
+export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
+  const [editedMember, setEditedMember] = useState(
+    member || {
+      name: "",
+      gender: "",
+      status: "",
+      carUsage: "",
+      attendance: {
+        day9: { present: "", stay: "" },
+        day10: { present: "", stay: "" },
+        day11: { present: "" },
+      },
+      meal: {
+        day9: { dinner: "" },
+        day10: { breakfast: "", lunch: "", dinner: "" },
+        day11: { breakfast: "" },
+      },
+      notes: "",
+    }
+  );
+
+  const [errors, setErrors] = useState({});
+  const modalContentRef = useRef(null);
 
   useEffect(() => {
-    setEditedMember(member);
+    setEditedMember(
+      member || {
+        name: "",
+        gender: "",
+        status: "",
+        carUsage: "",
+        attendance: {
+          day9: { present: "", stay: "" },
+          day10: { present: "", stay: "" },
+          day11: { present: "" },
+        },
+        meal: {
+          day9: { dinner: "" },
+          day10: { breakfast: "", lunch: "", dinner: "" },
+          day11: { breakfast: "" },
+        },
+        notes: "",
+      }
+    );
   }, [member]);
 
   const handleChange = (e) => {
@@ -110,15 +149,48 @@ export default function MemberEditModal({ member, onSave, onClose }) {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!editedMember.name.trim()) {
+      newErrors.name = "이름은 필수입니다.";
+    }
+    if (!editedMember.gender) {
+      newErrors.gender = "성별을 선택해주세요.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(editedMember);
+    if (validateForm()) {
+      onSave(editedMember);
+    } else {
+      if (modalContentRef.current) {
+        modalContentRef.current.scrollTop = 0;
+      }
+    }
+  };
+
+  const handleBackgroundClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleDelete = () => {
+    onDelete(member.id);
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>셀원 정보 수정</h2>
+    <div className="modal-overlay" onClick={handleBackgroundClick}>
+      <div
+        className="modal-content"
+        ref={modalContentRef}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2>{member ? "셀원 정보 수정" : "새 셀원 추가"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-column">
@@ -131,6 +203,7 @@ export default function MemberEditModal({ member, onSave, onClose }) {
                   value={editedMember.name}
                   onChange={handleChange}
                 />
+                {errors.name && <span className="error">{errors.name}</span>}
               </div>
             </div>
             <div className="form-column">
@@ -146,6 +219,9 @@ export default function MemberEditModal({ member, onSave, onClose }) {
                   <option value="남">👨남</option>
                   <option value="여">👧여</option>
                 </select>
+                {errors.gender && (
+                  <span className="error">{errors.gender}</span>
+                )}
               </div>
             </div>
           </div>
@@ -164,6 +240,9 @@ export default function MemberEditModal({ member, onSave, onClose }) {
                   <option value="참석">✅참석</option>
                   <option value="불참">❌불참</option>
                 </select>
+                {errors.status && (
+                  <span className="error">{errors.status}</span>
+                )}
               </div>
             </div>
             <div className="form-column">
@@ -280,10 +359,15 @@ export default function MemberEditModal({ member, onSave, onClose }) {
           </div>
 
           <div className="button-group">
-            <button type="submit">저장</button>
+            <button type="submit">{member ? "저장" : "추가"}</button>
             <button type="button" onClick={onClose}>
               취소
             </button>
+            {member && (
+              <button type="button" onClick={handleDelete}>
+                삭제
+              </button>
+            )}
           </div>
         </form>
       </div>

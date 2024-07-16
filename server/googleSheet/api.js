@@ -58,6 +58,21 @@ router.post("/insertSpreadsheetData", async (req, res) => {
   }
 });
 
+// DELETE 메서드로 수정
+router.delete("/deleteSpreadsheetRow", async (req, res) => {
+  try {
+    const { sheetName, rowNumber } = req.query;
+    const deletedRow = await googleSheetService.deleteSpreadsheetRow(
+      sheetName,
+      rowNumber
+    );
+    res.json({ success: true, deletedRow: deletedRow });
+  } catch (error) {
+    console.error("Error in /deleteSpreadsheetRow:", error);
+    res.status(500).json({ error: error.message || "Internal Server Error" });
+  }
+});
+
 router.get("/updates", googleSheetService.handleSSEConnection);
 
 module.exports = router;

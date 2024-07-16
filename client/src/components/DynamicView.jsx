@@ -20,7 +20,6 @@ const DynamicView = React.memo(function DynamicView() {
   }, []);
 
   const fetchSheetData = useCallback(async (sheetName) => {
-    console.log(sheetName);
     const response = await fetch(
       `/api/spreadsheetData/${encodeURIComponent(sheetName)}`
     );
@@ -30,7 +29,7 @@ const DynamicView = React.memo(function DynamicView() {
     const data = await response.json();
     const { ageGroup, filteredData } = filterSheetData(data.values);
     const cells = groupIntoCells(filteredData);
-    return { ageGroup, cells };
+    return { ageGroup, cells, values: data.values };
   }, []);
 
   const fetchAllData = useCallback(async () => {
@@ -104,7 +103,9 @@ const DynamicView = React.memo(function DynamicView() {
         />
         <Route
           path="/managecell/:sheetName/:cellName"
-          element={<ManageCell allCellData={allCellData} />}
+          element={
+            <ManageCell allCellData={allCellData} refetchData={fetchAllData} />
+          }
         />
       </Routes>
     </div>

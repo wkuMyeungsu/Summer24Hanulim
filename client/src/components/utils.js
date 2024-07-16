@@ -47,7 +47,10 @@ export function createCell(name) {
   return {
     name,
     members: [],
-    lastMember: [],
+    lastMembers: {
+      girl: { name: "", id: "" },
+      man: { name: "", id: "" },
+    },
     participantCount: 0,
     nonParticipantCount: 0,
   };
@@ -76,18 +79,11 @@ export function filterSheetData(data) {
 export function groupIntoCells(filteredData) {
   return filteredData.reduce((cells, item, index, array) => {
     if (item.type === "cell") {
-      // 새로운 셀을 추가하기 전에, 이전 셀의 lastMember를 설정합니다 (첫 번째 셀이 아닌 경우)
-      if (cells.length > 0) {
-        const previousCell = cells[cells.length - 1];
-        if (previousCell.members.length > 0) {
-          previousCell.lastMember =
-            previousCell.members[previousCell.members.length - 1];
-        }
-      }
       cells.push(createCell(item.name));
     } else if (item.type === "member" && cells.length > 0) {
-      const member = createMember(item.data);
       const currentCell = cells[cells.length - 1];
+      const member = createMember(item.data);
+
       currentCell.members.push(member);
 
       if (member.status === "참석") {
@@ -96,18 +92,19 @@ export function groupIntoCells(filteredData) {
         currentCell.nonParticipantCount++;
       }
 
-      // 현재 아이템이 filteredData의 마지막 요소이거나
-      // 다음 아이템이 새로운 셀의 시작인 경우, 이 멤버를 lastMember로 설정
-      if (index === array.length - 1 || array[index + 1].type === "cell") {
-        currentCell.lastMember = member;
+      // 마지막 남자와 여자 멤버 업데이트
+      if (member.gender === "여") {
+        currentCell.lastMembers.girl = { name: member.name, id: member.id };
+      } else if (member.gender === "남") {
+        currentCell.lastMembers.man = { name: member.name, id: member.id };
       }
     }
     return cells;
   }, []);
 }
 
-export function findRowById(sheetData, dataId) {
-  const values = sheetData.values;
+export function findRowById(sheetValues, dataId) {
+  const values = sheetValues;
 
   let targetRowIndex = -1;
   for (let i = 0; i < values.length; i++) {
