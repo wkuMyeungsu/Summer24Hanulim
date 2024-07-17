@@ -52,61 +52,6 @@
   color: #333;
 }
 
-.nav-bar {
-  margin: 20px 0;
-  background-color: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-bar input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-  height: 40px;
-}
-
-.search-bar button,
-.add-member-button {
-  padding: 10px 0px;
-  font-size: 16px;
-  background-color: #0f9d58;
-  color: white;
-  border: none;
-  cursor: pointer;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s;
-}
-
-.add-member-button {
-  padding: 10px 10px;
-}
-
-.search-bar button {
-  border-radius: 5px 5px 5px 5px;
-}
-
-.add-member-button {
-  border-radius: 5px;
-  margin-left: 10px;
-}
-
-.search-bar button:hover,
-.add-member-button:hover {
-  background-color: #0b8043;
-}
-
 .cell-management-container {
   background-color: white;
   border-radius: 10px;
@@ -170,19 +115,5 @@
   .info-item {
     flex: 1 0 100%;
     margin: 5px 0;
-  }
-
-  .nav-bar {
-    flex-direction: column;
-  }
-
-  .search-bar {
-    margin-bottom: 10px;
-  }
-
-  .add-member-button {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 10px;
   }
 }

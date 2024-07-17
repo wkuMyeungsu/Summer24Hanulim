@@ -47,10 +47,7 @@ export function createCell(name) {
   return {
     name,
     members: [],
-    lastMembers: {
-      girl: { name: "", id: "" },
-      man: { name: "", id: "" },
-    },
+    lastMember: null, // 초기값을 null로 설정
     participantCount: 0,
     nonParticipantCount: 0,
   };
@@ -73,17 +70,24 @@ export function filterSheetData(data) {
     return acc;
   }, []);
 
+  console.log(ageGroup);
   return { ageGroup, filteredData };
 }
 
 export function groupIntoCells(filteredData) {
   return filteredData.reduce((cells, item, index, array) => {
     if (item.type === "cell") {
+      if (cells.length > 0) {
+        const previousCell = cells[cells.length - 1];
+        if (previousCell.members.length > 0) {
+          previousCell.lastMember =
+            previousCell.members[previousCell.members.length - 1];
+        }
+      }
       cells.push(createCell(item.name));
     } else if (item.type === "member" && cells.length > 0) {
-      const currentCell = cells[cells.length - 1];
       const member = createMember(item.data);
-
+      const currentCell = cells[cells.length - 1];
       currentCell.members.push(member);
 
       if (member.status === "참석") {
@@ -92,12 +96,8 @@ export function groupIntoCells(filteredData) {
         currentCell.nonParticipantCount++;
       }
 
-      // 마지막 남자와 여자 멤버 업데이트
-      if (member.gender === "여") {
-        currentCell.lastMembers.girl = { name: member.name, id: member.id };
-      } else if (member.gender === "남") {
-        currentCell.lastMembers.man = { name: member.name, id: member.id };
-      }
+      // 현재 멤버를 lastMember로 설정
+      currentCell.lastMember = member;
     }
     return cells;
   }, []);
@@ -105,6 +105,7 @@ export function groupIntoCells(filteredData) {
 
 export function findRowById(sheetValues, dataId) {
   const values = sheetValues;
+  console.log(values);
 
   let targetRowIndex = -1;
   for (let i = 0; i < values.length; i++) {

@@ -1,3 +1,4 @@
+//service.js
 const { google } = require("googleapis");
 const { JWT } = require("google-auth-library");
 const { SPREADSHEET_ID, CLIENT_EMAIL, PRIVATE_KEY } = require("./config");
@@ -59,6 +60,12 @@ async function editSpreadsheetData(sheetName, rowNumber, newData) {
     console.log(
       `Row ${rowNumber} updated successfully with ${newData.length} columns`
     );
+    sendUpdateToClients({
+      type: "update",
+      sheetName,
+      range: updateRange,
+      value: newData,
+    });
     return rowNumber;
   } catch (error) {
     console.error("Error in editSheetData:", error);
@@ -68,18 +75,9 @@ async function editSpreadsheetData(sheetName, rowNumber, newData) {
 
 async function insertSpreadsheetData(sheetName, rowNumber, newData) {
   try {
-    // 1. 위의 행의 데이터 형식을 가져옵니다.
-    const aboveRowRange = `${sheetName}!A${rowNumber - 1}:Z${rowNumber - 1}`;
-    const aboveRowResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: aboveRowRange,
-    });
-    const aboveRowData = aboveRowResponse.data.values
-      ? aboveRowResponse.data.values[0]
-      : [];
-    console.log("Above row data:", aboveRowData);
+    console.log(`Inserting new data in ${sheetName} at row ${rowNumber}`);
 
-    // 2. 새 행을 삽입합니다.
+    // 1. 새 행을 삽입합니다.
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId: SPREADSHEET_ID,
       resource: {
@@ -89,7 +87,7 @@ async function insertSpreadsheetData(sheetName, rowNumber, newData) {
               range: {
                 sheetId: await getSheetId(SPREADSHEET_ID, sheetName),
                 dimension: "ROWS",
-                startIndex: rowNumber - 1, // 0-based index
+                startIndex: rowNumber - 1,
                 endIndex: rowNumber,
               },
             },
@@ -99,11 +97,11 @@ async function insertSpreadsheetData(sheetName, rowNumber, newData) {
     });
     console.log(`New row inserted at index ${rowNumber - 1}`);
 
-    // 3. 새 ID를 생성합니다.
+    // 2. 새 ID를 생성합니다.
     const newId = generateUniqueId();
     console.log("Generated new ID:", newId);
 
-    // 4. 삽입된 새 행에 초기화된 데이터를 추가합니다.
+    // 3. 삽입된 새 행에 데이터를 추가합니다.
     newData[0] = newId; // 새로운 ID를 첫 번째 셀에 추가
     const insertRange = `${sheetName}!A${rowNumber}:${getColumnLetter(
       newData.length
@@ -114,15 +112,18 @@ async function insertSpreadsheetData(sheetName, rowNumber, newData) {
       valueInputOption: "RAW",
       resource: { values: [newData] },
     });
-    console.log(
-      `New row data inserted at range ${insertRange} with data:`,
-      newData
-    );
+    console.log(`New row data inserted at range ${insertRange}`);
 
+    sendUpdateToClients({
+      type: "insert",
+      sheetName,
+      range: insertRange,
+      value: newData,
+    });
     return { rowNumber, newId };
   } catch (error) {
     console.error("Error in insertSheetData:", error);
-    throw error;
+    throw new Error(`Failed to insert new data: ${error.message}`);
   }
 }
 
@@ -131,7 +132,7 @@ async function deleteSpreadsheetRow(sheetName, rowNumber) {
     const sheetId = await getSheetId(SPREADSHEET_ID, sheetName);
     console.log("sheetId : ", sheetId);
 
-    if (!sheetId) {
+    if (sheetId === null) {
       throw new Error(`Sheet ${sheetName} not found`);
     }
 
@@ -155,7 +156,8 @@ async function deleteSpreadsheetRow(sheetName, rowNumber) {
 
     await sheets.spreadsheets.batchUpdate(request);
     console.log(`Row ${rowNumber} deleted successfully from ${sheetName}`);
-    return rowNumber;
+    sendUpdateToClients({ type: "delete", sheetName, rowNumber });
+    return { success: true, deletedRow: rowNumber };
   } catch (error) {
     console.error(
       `Error in deleteRow for ${sheetName} at row ${rowNumber}:`,

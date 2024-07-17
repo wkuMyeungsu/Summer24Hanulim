@@ -46,11 +46,18 @@ router.post("/editSpreadsheetData", async (req, res) => {
 router.post("/insertSpreadsheetData", async (req, res) => {
   try {
     const { sheetName, rowNumber, newData } = req.body;
+    console.log("Received request to insert new data:", {
+      sheetName,
+      rowNumber,
+      newData,
+    });
+
     const result = await googleSheetService.insertSpreadsheetData(
       sheetName,
       rowNumber,
       newData
     );
+    console.log("Data inserted successfully:", result);
     res.json({ success: true, insertedRow: result });
   } catch (error) {
     console.error("Error in /insertSpreadsheetData:", error);
@@ -62,11 +69,11 @@ router.post("/insertSpreadsheetData", async (req, res) => {
 router.delete("/deleteSpreadsheetRow", async (req, res) => {
   try {
     const { sheetName, rowNumber } = req.query;
-    const deletedRow = await googleSheetService.deleteSpreadsheetRow(
+    const result = await googleSheetService.deleteSpreadsheetRow(
       sheetName,
-      rowNumber
+      parseInt(rowNumber, 10)
     );
-    res.json({ success: true, deletedRow: deletedRow });
+    res.json(result);
   } catch (error) {
     console.error("Error in /deleteSpreadsheetRow:", error);
     res.status(500).json({ error: error.message || "Internal Server Error" });

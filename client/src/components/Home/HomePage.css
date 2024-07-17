@@ -203,6 +203,24 @@
   transition: transform 0.2s ease-in-out;
 }
 
+[class*="새가족셀"] {
+  background-color: #d9d2e9;
+}
+
+[class*="새가족셀"] .age-group-header {
+  color: #403164;
+  border-bottom-color: #403164;
+}
+
+[class*="새가족셀"] .cell-summary {
+  color: #403164;
+  background-color: #eeebf5;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .cell-list {

@@ -1,0 +1,77 @@
+.nav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+}
+
+.search-bar {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.sort-buttons button,
+.add-member-btn {
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.sort-buttons button:hover,
+.add-member-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.sort-buttons button.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.add-member-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.add-member-btn:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .nav-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .sort-buttons {
+    margin-bottom: 10px;
+  }
+
+  .sort-buttons button,
+  .add-member-btn {
+    width: 100%;
+  }
+}

@@ -1,3 +1,4 @@
+// DynamicView.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import "./DynamicView.css";
 import HomePage from "./Home/HomePage";
@@ -20,6 +21,7 @@ const DynamicView = React.memo(function DynamicView() {
   }, []);
 
   const fetchSheetData = useCallback(async (sheetName) => {
+    console.log(sheetName);
     const response = await fetch(
       `/api/spreadsheetData/${encodeURIComponent(sheetName)}`
     );
@@ -29,7 +31,7 @@ const DynamicView = React.memo(function DynamicView() {
     const data = await response.json();
     const { ageGroup, filteredData } = filterSheetData(data.values);
     const cells = groupIntoCells(filteredData);
-    return { ageGroup, cells, values: data.values };
+    return { ageGroup, cells, values: data.values }; // values 추가
   }, []);
 
   const fetchAllData = useCallback(async () => {
@@ -103,9 +105,7 @@ const DynamicView = React.memo(function DynamicView() {
         />
         <Route
           path="/managecell/:sheetName/:cellName"
-          element={
-            <ManageCell allCellData={allCellData} refetchData={fetchAllData} />
-          }
+          element={<ManageCell allCellData={allCellData} />}
         />
       </Routes>
     </div>

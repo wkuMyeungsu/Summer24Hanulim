@@ -165,7 +165,21 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSave(editedMember);
+      const updatedMember = { ...editedMember };
+
+      // Reset fields if "참석여부" is not "참석"
+      if (editedMember.status !== "참석") {
+        attendanceStructure.forEach(({ dayKey }) => {
+          updatedMember.attendance[dayKey] = { present: "", stay: "" };
+          if (updatedMember.meal[dayKey]) {
+            Object.keys(updatedMember.meal[dayKey]).forEach((mealKey) => {
+              updatedMember.meal[dayKey][mealKey] = "";
+            });
+          }
+        });
+      }
+
+      onSave(updatedMember);
     } else {
       if (modalContentRef.current) {
         modalContentRef.current.scrollTop = 0;
@@ -253,6 +267,7 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
                   name="carUsage"
                   value={editedMember.carUsage}
                   onChange={handleChange}
+                  disabled={editedMember.status !== "참석"}
                 >
                   <option value="">차량이용 선택</option>
                   <option value="첫날 선발">첫날 선발 (14:00)</option>
@@ -279,6 +294,7 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
                         name={`attendance.${dayKey}.${attendance.key}`}
                         value={editedMember.attendance[dayKey][attendance.key]}
                         onChange={handleChange}
+                        disabled={editedMember.status !== "참석"}
                       >
                         {attendance.options.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -299,6 +315,7 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
                           name={`attendance.${dayKey}.${stay.key}`}
                           value={editedMember.attendance[dayKey][stay.key]}
                           onChange={handleChange}
+                          disabled={editedMember.status !== "참석"}
                         >
                           {stay.options.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -337,6 +354,7 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
                             },
                           });
                         }}
+                        disabled={editedMember.status !== "참석"}
                       />
                       <label htmlFor={`meal-${dayKey}-${mealKey}`}>
                         {mealLabel}

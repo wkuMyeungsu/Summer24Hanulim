@@ -30,7 +30,7 @@ export default function CellList({ cellData, onCellClick }) {
             <p>참석 인원: {participantCount}</p>
           </div>
           <div className="info-row">
-            <p>미조사 인원: {unknownCount}</p>
+            <p>미정 인원: {unknownCount}</p>
             <p>불참 인원: {nonParticipantCount}</p>
           </div>
         </div>

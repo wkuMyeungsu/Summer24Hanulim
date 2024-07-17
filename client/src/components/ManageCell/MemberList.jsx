@@ -7,7 +7,13 @@ export default function MemberList({ members, onMemberClick }) {
       <h2>셀 멤버</h2>
       <ul>
         {members.map((member) => (
-          <li key={member.id} onClick={() => onMemberClick(member)}>
+          <li
+            key={member.id}
+            onClick={() => onMemberClick(member)}
+            className={`member-item ${
+              member.gender === "남" ? "male" : "female"
+            }`}
+          >
             <div className="member-summary">
               <div className="member-name">{member.name}</div>
               <div className="member-status">{member.status || "미정"}</div>
