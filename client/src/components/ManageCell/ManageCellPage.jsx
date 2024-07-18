@@ -96,7 +96,30 @@ export default function ManageCellPage({ allCellData, refetchData }) {
   const handleMemberClick = useCallback((member) => {
     setSelectedMember(member);
     setIsModalOpen(true);
+    // 새로운 히스토리 항목 추가
+    window.history.pushState({ modal: "edit" }, "");
   }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (isModalOpen || isAddModalOpen) {
+        handleCloseModal();
+        // 브라우저의 기본 뒤로가기 동작을 방지
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isModalOpen, isAddModalOpen, handleCloseModal]);
 
   const handleMemberEdit = useCallback(
     async (editedMember) => {
@@ -158,6 +181,8 @@ export default function ManageCellPage({ allCellData, refetchData }) {
 
   const handleAddMember = useCallback(() => {
     setIsAddModalOpen(true);
+    // 새로운 히스토리 항목 추가
+    window.history.pushState({ modal: "add" }, "");
   }, []);
 
   const handleAddMemberSubmit = useCallback(
@@ -347,7 +372,11 @@ export default function ManageCellPage({ allCellData, refetchData }) {
         <MemberEditModal
           member={selectedMember}
           onSave={handleMemberEdit}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            handleCloseModal();
+            // 모달을 닫을 때 히스토리에서 항목 제거
+            window.history.back();
+          }}
           onDelete={handleDeleteRow}
         />
       )}
@@ -355,7 +384,11 @@ export default function ManageCellPage({ allCellData, refetchData }) {
         <MemberEditModal
           member={null}
           onSave={handleAddMemberSubmit}
-          onClose={() => setIsAddModalOpen(false)}
+          onClose={() => {
+            handleCloseModal();
+            // 모달을 닫을 때 히스토리에서 항목 제거
+            window.history.back();
+          }}
         />
       )}
     </div>
