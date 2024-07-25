@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 export default function Footer({ isVisible }) {
@@ -6,7 +7,9 @@ export default function Footer({ isVisible }) {
 
   return (
     <footer>
-      <h1 className="footer-title">한울림 청년부</h1>
+      <Link to="/statistics" className="statistics-link">
+        <h1 className="footer-title">참석 조사 현황</h1>
+      </Link>
     </footer>
   );
 }

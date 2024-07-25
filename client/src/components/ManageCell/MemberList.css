@@ -1,8 +1,27 @@
+.member-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 .member-list h2 {
   color: #0f9d58;
   border-bottom: 2px solid #0f9d58;
   padding-bottom: 10px;
   margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.status-group {
+  margin-bottom: 30px;
+}
+
+.status-header {
+  color: #fff;
+  background-color: #0f9d58;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
 
 .member-list ul {
@@ -11,35 +30,32 @@
 }
 
 .member-list li {
+  border: 1px solid #e0e0e0;
+  margin-bottom: 10px;
   padding: 15px;
-  border-bottom: 1px solid #e0e0e0;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s, border-left-color 0.3s;
-  border-left: 5px solid transparent;
-  margin: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .member-list li:hover {
-  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .member-list li.male {
-  border-left-color: #4a90e2;
+  border-left: 5px solid #4a90e2;
 }
 
 .member-list li.female {
-  border-left-color: #e57373;
-}
-
-.member-summary {
-  display: flex;
-  flex-direction: column;
+  border-left: 5px solid #e57373;
 }
 
 .member-name {
   font-size: 1.2em;
   font-weight: bold;
-  color: #0f9d58;
+  margin-bottom: 8px;
 }
 
 .male .member-name {
@@ -50,31 +66,15 @@
   color: #e57373;
 }
 
-.member-status {
-  font-style: italic;
-  color: #666;
-  margin-bottom: 5px;
-}
-
 .member-details {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
-.member-details span {
+.car-usage {
   background-color: #e8f5e9;
   padding: 3px 8px;
-  border-radius: 10px;
+  border-radius: 15px;
   font-size: 0.9em;
-}
-
-.male .member-details span {
-  background-color: #e3f2fd;
-}
-
-.female .member-details span {
-  background-color: #ffebee;
 }
 
 .member-attendance {
@@ -83,14 +83,27 @@
 }
 
 .attendance-day {
-  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
-/* 추가적인 성별 구분 스타일 */
-.male .attendance-day {
-  color: #1565c0;
+.day-label {
+  min-width: 60px;
+  font-weight: bold;
 }
 
-.female .attendance-day {
-  color: #c62828;
+.attendance-status,
+.stay-status {
+  margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .member-list li {
+    padding: 10px;
+  }
+
+  .member-name {
+    font-size: 1.1em;
+  }
 }

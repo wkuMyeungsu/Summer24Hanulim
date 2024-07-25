@@ -3,10 +3,15 @@ const express = require("express");
 const router = express.Router();
 const googleSheetService = require("./service");
 
+allowedSheetNames = ["20-27세", "28-32세", "33-세", "새가족셀"];
+
 router.get("/sheetNames", async (req, res) => {
   try {
-    const sheetNames = await googleSheetService.fetchSheetNames();
-    res.json(sheetNames);
+    const allSheetNames = await googleSheetService.fetchSheetNames();
+    const filteredSheetNames = allSheetNames.filter((name) =>
+      allowedSheetNames.includes(name)
+    );
+    res.json(filteredSheetNames);
   } catch (error) {
     console.error("Detailed error in /sheetNames:", error);
     res.status(500).json({ error: error.message || "Internal Server Error" });

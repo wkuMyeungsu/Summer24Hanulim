@@ -4,6 +4,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  padding-top: 0px;
   background-color: #f0f0f0;
   border-bottom: 1px solid #ddd;
 }
@@ -33,7 +34,6 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
 }
 
 .sort-buttons button:hover,
@@ -57,16 +57,15 @@
 
 @media (max-width: 768px) {
   .nav-bar {
-    flex-direction: column;
     align-items: stretch;
   }
 
   .search-bar {
     margin-right: 0;
-    margin-bottom: 10px;
   }
 
   .sort-buttons {
+    font-size: 10px;
     margin-bottom: 10px;
   }
 

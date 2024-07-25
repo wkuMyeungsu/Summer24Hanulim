@@ -5,21 +5,21 @@ const mealStructure = [
   {
     dayKey: "day9",
     dayLabel: "9일(금)",
-    meals: [{ mealKey: "dinner", mealLabel: "🍽️저녁" }],
+    meals: [{ mealKey: "dinner", mealLabel: "🍽️저녁 - 식당 밥" }],
   },
   {
     dayKey: "day10",
     dayLabel: "10일(토)",
     meals: [
-      { mealKey: "breakfast", mealLabel: "🥪아침" },
-      { mealKey: "lunch", mealLabel: "🍽️점심" },
-      { mealKey: "dinner", mealLabel: "🍽️저녁" },
+      { mealKey: "breakfast", mealLabel: "🥪아침 - 이삭토스트" },
+      { mealKey: "lunch", mealLabel: "🍽️점심 - 식당 밥" },
+      { mealKey: "dinner", mealLabel: "🍽️저녁 - 식당 밥" },
     ],
   },
   {
     dayKey: "day11",
     dayLabel: "11일(일)",
-    meals: [{ mealKey: "breakfast", mealLabel: "🍽️아침" }],
+    meals: [{ mealKey: "breakfast", mealLabel: "🍽️아침 - 식당 밥" }],
   },
 ];
 
@@ -105,7 +105,9 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
   );
 
   const [errors, setErrors] = useState({});
+  const [showStatusWarning, setShowStatusWarning] = useState(false);
   const modalContentRef = useRef(null);
+  const statusRef = useRef(null);
 
   useEffect(() => {
     setEditedMember(

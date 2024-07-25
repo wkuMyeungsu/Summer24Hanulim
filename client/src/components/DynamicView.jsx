@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./DynamicView.css";
 import HomePage from "./Home/HomePage";
-import ManageCell from "./ManageCell/ManageCellPage";
+import ManageCellPage from "./ManageCell/ManageCellPage";
+import StatisticsPage from "./Statistics/StatisticsPage";
 import { Routes, Route } from "react-router-dom";
 import { filterSheetData, groupIntoCells } from "./utils";
 
@@ -105,7 +106,11 @@ const DynamicView = React.memo(function DynamicView() {
         />
         <Route
           path="/managecell/:sheetName/:cellName"
-          element={<ManageCell allCellData={allCellData} />}
+          element={<ManageCellPage allCellData={allCellData} />}
+        />
+        <Route
+          path="/statistics"
+          element={<StatisticsPage allCellData={allCellData} />}
         />
       </Routes>
     </div>

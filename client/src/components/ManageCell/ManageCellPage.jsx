@@ -15,8 +15,8 @@ export default function ManageCellPage({ allCellData, refetchData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({
-    name: "none",
-    gender: "none",
+    name: "asc",
+    gender: "female-first",
   });
 
   const { sheetName, cellName } = useParams();
@@ -273,24 +273,27 @@ export default function ManageCellPage({ allCellData, refetchData }) {
 
   const handleDeleteRow = useCallback(
     async (selectedMember) => {
-      setIsModalOpen(false);
-      setIsLoading(true);
-      setError(null);
-      try {
-        const sheetValues = allCellData[sheetName].values;
-        const rowIndex = findRowById(sheetValues, selectedMember);
-        if (rowIndex === -1) {
-          throw new Error("해당 회원 데이터를 찾을 수 없습니다.");
-        }
-        const rowNumber = rowIndex + 1; // Google Sheets API는 1부터 시작하는 인덱스를 사용
+      const alertResult = window.confirm("정말로 삭제 하시겠습니까?");
+      if (alertResult) {
+        setIsModalOpen(false);
+        setIsLoading(true);
+        setError(null);
+        try {
+          const sheetValues = allCellData[sheetName].values;
+          const rowIndex = findRowById(sheetValues, selectedMember);
+          if (rowIndex === -1) {
+            throw new Error("해당 회원 데이터를 찾을 수 없습니다.");
+          }
+          const rowNumber = rowIndex + 1; // Google Sheets API는 1부터 시작하는 인덱스를 사용
 
-        await deleteMemberRow(rowNumber);
-        loadCellData(); // 셀 데이터 다시 로드
-      } catch (err) {
-        console.log(err);
-        setError("회원 데이터 삭제에 실패했습니다. 다시 시도해 주세요.");
-      } finally {
-        setIsLoading(false);
+          await deleteMemberRow(rowNumber);
+          loadCellData(); // 셀 데이터 다시 로드
+        } catch (err) {
+          console.log(err);
+          setError("회원 데이터 삭제에 실패했습니다. 다시 시도해 주세요.");
+        } finally {
+          setIsLoading(false);
+        }
       }
     },
     [sheetName, allCellData, loadCellData]
@@ -329,22 +332,22 @@ export default function ManageCellPage({ allCellData, refetchData }) {
   return (
     <div className="manage-cell-page">
       <div className="page-header">
-        <h2>{cellData.name} 셀 관리</h2>
+        <h2>{cellData.name} 셀 현황</h2>
       </div>
       {isLoading && (
         <div className="loading-overlay">데이터 업데이트 중...</div>
       )}
       {error && <div className="error-message">{error}</div>}
       <div className="cell-info">
-        <div className="info-item">
+        <div className="info-item total-members">
           <span className="info-label">전체 인원:</span>
           <span className="info-value">{cellData.members.length}</span>
         </div>
-        <div className="info-item">
+        <div className="info-item attending-members">
           <span className="info-label">참석 인원:</span>
           <span className="info-value">{cellData.participantCount}</span>
         </div>
-        <div className="info-item">
+        <div className="info-item undecided-members">
           <span className="info-label">미정 인원:</span>
           <span className="info-value">
             {cellData.members.length -
@@ -352,7 +355,7 @@ export default function ManageCellPage({ allCellData, refetchData }) {
               cellData.nonParticipantCount}
           </span>
         </div>
-        <div className="info-item">
+        <div className="info-item absent-members">
           <span className="info-label">불참 인원:</span>
           <span className="info-value">{cellData.nonParticipantCount}</span>
         </div>
@@ -361,6 +364,8 @@ export default function ManageCellPage({ allCellData, refetchData }) {
         onSearch={handleSearch}
         onAddMember={handleAddMember}
         onSort={handleSort}
+        initialNameSort={sortConfig.name}
+        initialGenderSort={sortConfig.gender}
       />
       <div className="cell-management-container">
         <MemberList

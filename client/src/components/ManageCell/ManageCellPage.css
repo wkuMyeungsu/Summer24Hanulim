@@ -23,7 +23,6 @@
 
 .cell-info {
   background-color: white;
-  border-radius: 0 0 10px 10px;
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
@@ -35,14 +34,32 @@
   flex: 1 0 40%;
   margin: 10px;
   text-align: center;
-  background-color: #e8f5e9;
   padding: 15px;
   border-radius: 8px;
 }
 
+.total-members {
+  background-color: #eff8f0;
+  color: #0f9d58;
+}
+
+.attending-members {
+  background-color: #cbe9cd;
+  color: #0d7745;
+}
+
+.undecided-members {
+  background-color: #eff8f0;
+  color: #0f9d58;
+}
+
+.absent-members {
+  background-color: #cbe9cd;
+  color: #0d7745;
+}
+
 .info-label {
   font-weight: bold;
-  color: #0f9d58;
   display: block;
   margin-bottom: 5px;
 }
@@ -108,12 +125,7 @@
 }
 
 @media (max-width: 768px) {
-  .cell-info {
-    flex-direction: column;
-  }
-
   .info-item {
-    flex: 1 0 100%;
-    margin: 5px 0;
+    margin: 5px 5px;
   }
 }

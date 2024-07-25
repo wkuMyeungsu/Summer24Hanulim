@@ -9,9 +9,20 @@ footer {
   background-color: #0f9d58;
 }
 
+.statistics-link {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #0b8043;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
 .footer-title {
-  font-size: 24px;
-  font-weight: lighter;
+  margin: 0;
+  font-size: 18px;
+  font-weight: normal;
 }
 
 /* 태블릿 환경 */

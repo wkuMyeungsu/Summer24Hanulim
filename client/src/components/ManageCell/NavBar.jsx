@@ -1,10 +1,21 @@
+// NavBar.jsx
 import React, { useState, useEffect } from "react";
 import "./NavBar.css";
 
-function NavBar({ onSearch, onAddMember, onSort }) {
+function NavBar({
+  onSearch,
+  onAddMember,
+  onSort,
+  initialNameSort,
+  initialGenderSort,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [nameSort, setNameSort] = useState("none");
-  const [genderSort, setGenderSort] = useState("none");
+  const [nameSort, setNameSort] = useState(initialNameSort);
+  const [genderSort, setGenderSort] = useState(initialGenderSort);
+
+  useEffect(() => {
+    onSort({ name: initialNameSort, gender: initialGenderSort });
+  }, []);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -27,8 +38,8 @@ function NavBar({ onSearch, onAddMember, onSort }) {
   };
 
   const getNameSortLabel = () => {
-    if (nameSort === "asc") return "이름 ▲";
-    if (nameSort === "desc") return "이름 ▼";
+    if (nameSort === "asc") return "이름 ▼";
+    if (nameSort === "desc") return "이름 ▲";
     return "이름순";
   };
 
@@ -49,16 +60,10 @@ function NavBar({ onSearch, onAddMember, onSort }) {
         />
       </div>
       <div className="sort-buttons">
-        <button
-          onClick={handleNameSort}
-          className={nameSort !== "none" ? "active" : ""}
-        >
+        <button onClick={handleNameSort} className="active">
           {getNameSortLabel()}
         </button>
-        <button
-          onClick={handleGenderSort}
-          className={genderSort !== "none" ? "active" : ""}
-        >
+        <button onClick={handleGenderSort} className="active">
           {getGenderSortLabel()}
         </button>
       </div>
