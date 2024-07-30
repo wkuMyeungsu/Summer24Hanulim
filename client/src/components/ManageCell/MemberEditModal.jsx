@@ -172,6 +172,7 @@ export default function MemberEditModal({ member, onSave, onClose, onDelete }) {
       // Reset fields if "참석여부" is not "참석"
       if (editedMember.status !== "참석") {
         attendanceStructure.forEach(({ dayKey }) => {
+          updatedMember.carUsage = "";
           updatedMember.attendance[dayKey] = { present: "", stay: "" };
           if (updatedMember.meal[dayKey]) {
             Object.keys(updatedMember.meal[dayKey]).forEach((mealKey) => {
